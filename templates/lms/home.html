@@ -1,0 +1,43 @@
+{% extends 'lms/base.html' %}
+
+{% block content %}
+<div class="hero bg-base-200 py-8">
+    <div class="hero-content text-center">
+        <div>
+            <h1 class="text-4xl font-bold text-base-content">Welcome to Learning Management System</h1>
+            <p class="py-6 text-xl text-base-content/70">Explore our courses and start learning today!</p>
+        </div>
+    </div>
+</div>
+
+<div class="container mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {% for course in courses %}
+        <div class="card bg-base-100 shadow-xl">
+            {% if course.details.course_image %}
+            <figure>
+                <img src="{{ course.details.course_image.url }}" alt="{{ course.course_name }}" class="w-full h-48 object-cover" />
+            </figure>
+            {% endif %}
+            <div class="card-body">
+                <h2 class="card-title">{{ course.course_name }}</h2>
+                <p>{{ course.details.description|truncatewords:30 }}</p>
+                <div class="card-actions justify-between items-center mt-4">
+                    <div class="text-sm opacity-70">
+                        <p>Category: {{ course.get_category_display }}</p>
+                        <p>Trainer: {{ course.trainer.get_full_name }}</p>
+                        <p>Created {{ course.created_at|timesince }} ago</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-full">
+            <div class="alert alert-info">
+                <p class="text-center">No courses available at the moment. Check back later!</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

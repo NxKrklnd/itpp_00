@@ -1,0 +1,31 @@
+{% extends 'lms/base.html' %}
+
+{% block content %}
+<div class="hero min-h-screen bg-base-200">
+    <div class="hero-content flex-col w-full max-w-md">
+        <div class="card w-full bg-base-100 shadow-xl">
+            <div class="card-body">
+                <h2 class="card-title justify-center">Become a Trainer</h2>
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    <div class="form-control w-full">
+                        <label class="label">
+                            <span class="label-text">Mobile Number</span>
+                        </label>
+                        <input type="tel" id="mobile" name="mobile" required pattern="^\+?1?\d{9,15}$" class="input input-bordered w-full" />
+                        <label class="label">
+                            <span class="label-text-alt">Enter your mobile number in international format (e.g., +1234567890)</span>
+                        </label>
+                    </div>
+                    <div class="form-control mt-6">
+                        <button type="submit" class="btn btn-primary w-full">Submit Application</button>
+                    </div>
+                </form>
+                <div class="text-center mt-4">
+                    <p class="text-sm text-base-content/70">Your application will be reviewed by our administrators.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
