@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -141,23 +141,40 @@ def create_course(request):
             return redirect('create_course')
 
         try:
+            # Validate image file type
+            if not course_image.content_type.startswith('image/'):
+                messages.error(request, 'Please upload a valid image file!')
+                return redirect('create_course')
+
+            # Create course info
             course = CourseInfo.objects.create(
                 trainer=request.user,
                 course_name=course_name,
                 category=category
             )
 
-            CourseDetails.objects.create(
-                course=course,
-                description=description,
-                course_image=course_image
-            )
+            # Create course details
+            try:
+                CourseDetails.objects.create(
+                    course=course,
+                    description=description,
+                    course_image=course_image
+                )
+            except Exception as detail_error:
+                # If course details creation fails, delete the course info to maintain consistency
+                course.delete()
+                messages.error(request, f'Error uploading course image: {str(detail_error)}')
+                return redirect('create_course')
 
             messages.success(request, 'Course created successfully!')
             return redirect('course_detail', slug=course.slug)
         except Exception as e:
-            messages.error(request, 'An error occurred while creating the course. Please try again.')
+            messages.error(request, f'Error creating course: {str(e)}')
             return redirect('create_course')
 
     categories = dict(CourseInfo.CATEGORY_CHOICES)
     return render(request, 'lms/create_course.html', {'categories': categories})
+
+def course_detail(request, slug):
+    course = get_object_or_404(CourseInfo.objects.select_related('details', 'trainer'), slug=slug)
+    return render(request, 'lms/course_detail.html', {'course': course})

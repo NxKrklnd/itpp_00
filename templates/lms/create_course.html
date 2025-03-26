@@ -1,0 +1,59 @@
+{% extends 'lms/base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8 text-center">Create New Course</h1>
+
+        {% if messages %}
+        <div class="mb-6">
+            {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %}alert-error{% else %}alert-{{ message.tags }}{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data" class="card bg-base-100 shadow-xl p-6">
+            {% csrf_token %}
+            <div class="form-control mb-4">
+                <label class="label">
+                    <span class="label-text">Course Name</span>
+                </label>
+                <input type="text" name="course_name" class="input input-bordered w-full" required>
+            </div>
+
+            <div class="form-control mb-4">
+                <label class="label">
+                    <span class="label-text">Category</span>
+                </label>
+                <select name="category" class="select select-bordered w-full" required>
+                    <option value="">Select a category</option>
+                    {% for key, value in categories.items %}
+                    <option value="{{ key }}">{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-control mb-4">
+                <label class="label">
+                    <span class="label-text">Description</span>
+                </label>
+                <textarea name="description" class="textarea textarea-bordered h-32" required></textarea>
+            </div>
+
+            <div class="form-control mb-6">
+                <label class="label">
+                    <span class="label-text">Course Image</span>
+                </label>
+                <input type="file" name="course_image" accept="image/*" class="file-input file-input-bordered w-full" required>
+            </div>
+
+            <div class="form-control">
+                <button type="submit" class="btn btn-primary">Create Course</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

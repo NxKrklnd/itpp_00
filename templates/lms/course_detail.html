@@ -1,0 +1,22 @@
+{% extends 'lms/base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+        <div class="card bg-base-100 shadow-xl">
+            <figure class="px-4 pt-4">
+                <img src="{{ course.details.course_image.url }}" alt="{{ course.course_name }}" class="rounded-xl w-full h-64 object-cover">
+            </figure>
+            <div class="card-body">
+                <h1 class="card-title text-3xl">{{ course.course_name }}</h1>
+                <div class="flex items-center gap-4 text-sm text-gray-600 mb-4">
+                    <span>Category: {{ course.get_category_display }}</span>
+                    <span>Trainer: {{ course.trainer.get_full_name }}</span>
+                    <span>Created: {{ course.details.created_at|date:"M d, Y" }}</span>
+                </div>
+                <p class="text-lg">{{ course.details.description }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
