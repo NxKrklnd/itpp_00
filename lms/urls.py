@@ -9,4 +9,6 @@ urlpatterns = [
     path('become-trainer/', views.learn_as_trainer, name='learn_as_trainer'),
     path('create-course/', views.create_course, name='create_course'),
     path('course/<slug:slug>/', views.course_detail, name='course_detail'),
+    path('profile/', views.profile, name='profile'),
+    path('profile/edit/', views.edit_profile, name='edit_profile'),
 ]

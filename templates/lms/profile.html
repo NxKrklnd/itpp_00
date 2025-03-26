@@ -1,0 +1,107 @@
+{% extends 'lms/base.html' %}
+
+{% block content %}
+<div class="min-h-screen bg-base-200 py-8">
+    <div class="max-w-4xl mx-auto px-4">
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+                <div class="flex flex-col items-center mb-8">
+                    {% if user.profile.profile_picture %}
+                        <div class="avatar mb-4">
+                            <div class="w-32 h-32 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                                <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture">
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="avatar placeholder mb-4">
+                            <div class="bg-neutral text-neutral-content rounded-full w-32 h-32 ring ring-primary ring-offset-base-100 ring-offset-2">
+                                <span class="text-4xl">{{ user.get_full_name|default:user.username|make_list|first|upper }}</span>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <h2 class="text-2xl font-bold">{{ user.get_full_name|default:user.username }}</h2>
+                </div>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} mb-4">
+                            <div class="flex-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6 mx-2 stroke-current">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <label>{{ message }}</label>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <div class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text font-semibold">First Name</span>
+                            </label>
+                            <p class="py-3 px-4 bg-base-200 rounded-lg">{{ user.first_name }}</p>
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text font-semibold">Last Name</span>
+                            </label>
+                            <p class="py-3 px-4 bg-base-200 rounded-lg">{{ user.last_name }}</p>
+                        </div>
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Email</span>
+                        </label>
+                        <p class="py-3 px-4 bg-base-200 rounded-lg">{{ user.email }}</p>
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Bio</span>
+                        </label>
+                        <p class="py-3 px-4 bg-base-200 rounded-lg min-h-[6rem]">{{ user.profile.bio|default:"No bio provided" }}</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text font-semibold">Birthday</span>
+                            </label>
+                            <p class="py-3 px-4 bg-base-200 rounded-lg">{{ user.profile.birthday|date:"F j, Y"|default:"Not provided" }}</p>
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text font-semibold">Age</span>
+                            </label>
+                            <p class="py-3 px-4 bg-base-200 rounded-lg">{{ user.profile.age|default:"Not available" }} years old</p>
+                        </div>
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Gender</span>
+                        </label>
+                        <p class="py-3 px-4 bg-base-200 rounded-lg">{{ user.profile.get_gender_display|default:"Not specified" }}</p>
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Address</span>
+                        </label>
+                        <p class="py-3 px-4 bg-base-200 rounded-lg">{{ user.profile.address|default:"No address provided" }}</p>
+                    </div>
+
+                    <div class="flex justify-center mt-8">
+                        <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

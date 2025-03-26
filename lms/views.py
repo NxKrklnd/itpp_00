@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from .models import TrainerRegistration, CourseInfo, CourseDetails
+from .models import TrainerRegistration, CourseInfo, CourseDetails, Profile
 
 def home(request):
     courses = CourseInfo.objects.select_related('details').all()
@@ -178,3 +178,72 @@ def create_course(request):
 def course_detail(request, slug):
     course = get_object_or_404(CourseInfo.objects.select_related('details', 'trainer'), slug=slug)
     return render(request, 'lms/course_detail.html', {'course': course})
+
+@login_required
+def profile(request):
+    return render(request, 'lms/profile.html')
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        bio = request.POST.get('bio')
+        birthday = request.POST.get('birthday')
+        gender = request.POST.get('gender')
+        address = request.POST.get('address')
+        phone_number = request.POST.get('phone_number')
+        website = request.POST.get('website')
+        profile_picture = request.FILES.get('profile_picture')
+
+        # Validate required fields
+        if not all([first_name, last_name, email]):
+            messages.error(request, 'First name, last name and email are required!')
+            return redirect('edit_profile')
+
+        # Validate email format
+        try:
+            validate_email(email)
+        except ValidationError:
+            messages.error(request, 'Invalid email format!')
+            return redirect('edit_profile')
+
+        # Update user information
+        user = request.user
+        user.first_name = first_name
+        user.last_name = last_name
+        user.email = email
+        user.save()
+
+        # Update profile information
+        profile = user.profile
+        profile.bio = bio or ''
+        if birthday:
+            try:
+                profile.birthday = birthday
+            except ValidationError:
+                messages.error(request, 'Invalid birthday format! Use YYYY-MM-DD')
+                return redirect('edit_profile')
+        profile.gender = gender or ''
+        profile.address = address or ''
+        profile.phone_number = phone_number or ''
+        profile.website = website or ''
+
+        if profile_picture:
+            if not profile_picture.content_type.startswith('image/'):
+                messages.error(request, 'Please upload a valid image file!')
+                return redirect('edit_profile')
+            profile.profile_picture = profile_picture
+
+        try:
+            profile.save()
+            messages.success(request, 'Profile updated successfully!')
+            return redirect('profile')
+        except ValidationError as e:
+            messages.error(request, str(e))
+            return redirect('edit_profile')
+
+    return render(request, 'lms/edit_profile.html', {
+        'gender_choices': Profile.GENDER_CHOICES
+    })

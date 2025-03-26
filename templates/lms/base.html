@@ -50,7 +50,7 @@
                                 </li>
                             {% endif %}
                             <li>
-                                <span class="btn btn-ghost">Welcome, {{ user.get_full_name|default:user.username }}</span>
+                                <a class="btn btn-ghost" href="{% url 'profile' %}">Welcome, {{ user.get_full_name|default:user.username }}</a>
                             </li>
                             <li>
                                 <a class="btn btn-ghost" href="{% url 'logout' %}">Logout</a>
@@ -107,7 +107,7 @@
                         </li>
                     {% endif %}
                     <li>
-                        <span>Welcome, {{ user.get_full_name|default:user.username }}</span>
+                        <a href="{% url 'profile' %}">Welcome, {{ user.get_full_name|default:user.username }}</a>
                     </li>
                     <li>
                         <a href="{% url 'logout' %}">Logout</a>
